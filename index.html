@@ -17,10 +17,16 @@
     // วางลิงก์ /exec ของ Apps Script บทความข่าว
     const EXEC = 'https://script.google.com/macros/s/AKfycbyQzVsEChwHZsHA7hfXOl9w3AYh5rBJ2JBLYCcct3mUXr7RUrcMpNFC5tcmO85o0Ld5/exec';
     // ส่ง ?page=admin ต่อให้ Apps Script ถ้ามี
-    const app = document.getElementById('app');
-    app.src = EXEC + location.search;
-    // กดย้อนกลับมาจากเว็บข่าว แล้วเบราว์เซอร์คืนหน้าเดิมจากแคช → โหลดระบบใหม่ ไม่ให้หน้าค้าง
-    window.addEventListener('pageshow', e => { if (e.persisted) app.src = EXEC + location.search; });
+    const SRC = EXEC + location.search;
+    document.getElementById('app').src = SRC;
+    // กดย้อนกลับมาแล้วเบราว์เซอร์คืนหน้าเดิมจากแคช → สร้างกรอบใหม่ (ไม่เพิ่มประวัติการย้อนกลับ)
+    window.addEventListener('pageshow', e => {
+      if (!e.persisted) return;
+      const old = document.getElementById('app');
+      const fresh = old.cloneNode(false);
+      fresh.src = SRC;
+      old.replaceWith(fresh);
+    });
   </script>
 </body>
 </html>
